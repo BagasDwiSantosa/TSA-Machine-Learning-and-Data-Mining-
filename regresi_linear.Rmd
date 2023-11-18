@@ -1,0 +1,70 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+
+```{r}
+germancredit <- read.csv(file = "https://github.com/alfanugraha/tsa-handson/raw/master/german_credit.csv",
+                         header = T,
+                         sep = ",")
+str(germancredit)
+```
+
+```{r}
+germancredit
+```
+
+```{r}
+skimr::skim(germancredit)
+```
+
+## REGRESI LOGISTIK BINER
+
+```{r}
+germancredit$creditability
+germancredit$creditability
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

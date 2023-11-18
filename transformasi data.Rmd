@@ -1,0 +1,171 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+plot(cars)
+```
+
+##Uji Normalitas
+
+### Membangkitkan Data
+
+```{r}
+x <- rnorm(100,0,1)
+hist(x)
+```
+
+```{r}
+#data menyebar normal
+qqnorm(x)
+qqline(x, col=2)
+```
+
+```{r}
+shapiro.test(x)
+```
+
+```{r}
+#data tidak menyebar normal
+chi <- rchisq(100,2,0)
+
+#membuktikan data menyebar normal tidak
+#tahapan 1: histogram
+hist(chi)
+
+#tahapan 2: qqplot
+qqnorm(chi, col='red')
+
+#tahapan 3: uji kenormalan dengan shapiro-wilk
+shapiro.test(chi)
+```
+
+#
+
+```{r}
+set.seed(7)
+x <- rep(seq(1,5, ), each=10)
+
+e <- c()
+
+for (i in 1:5) {
+  e0<-rnorm(10,0,0.5*i)
+  e<-c(e,e0) }
+y<-15+(4*x)+e
+mod<-lm(y~x)
+res<-residuals(mod)
+fits<-fitted(mod)
+plot(fits,res)
+plot(x,y)
+  
+  
+```
+
+```{r}
+par(mfrow=c(1,2))
+plot(fits, res)
+plot(x, y)
+```
+
+Pola sisaan memperlihatkan adanya ketidakhomogen ragam
+
+#power transform
+
+dengan teknik *power transforms*, transfromasi peubah `x` dan `y` dengan *monotonic with inflection point* lalu periksa kembali pola sisaan
+
+$X =X^{-1} = 1/
+
+```{r}
+xt<-1/x; yt<-y/x
+modt<-lm(yt~xt); rest<-residuals(modt); fitst<-fitted(modt)
+plot(fitst,rest); plot(xt,yt)
+```
+#Ilustrasi
+
+```{r}
+
+Data<- read.csv('https://github.com/alfanugraha/tsa-handson/raw/master/turmidity.csv', header=T, sep=',')
+Turbidity<-Data$Turbidity
+
+plotNormalHistogram(Turbidity)
+```
+
+```{r}
+qqnorm(Turbidity, ylab = "Sample Quantiles for Turbidity")
+qqline(Turbidity, col='red')
+```
+
+### Transformasi dengan Metode Tukey
+
+```{r}
+Transf_tukey <- transformTukey(Turbidity, plotit = F)
+```
+
+```{r}
+plotNormalHistogram(Transf_tukey)
+```
+
+### Transformasi Box-Cox
+```{r}
+library(MASS)
+#transformasi boxcox pada data tubridity
+#dengan rentang nilai [-6, -5.9, ..., 5.9, 6] 
+Trans_box <- boxcox(
+  Turbidity ~ 1,
+  lambda = seq(-6, 6, 0.1)
+)
+Trans_box
+```
+
+```{r}
+#buat dataframe dari hasil transbox
+cox <- data.frame(Trans_box$x, Trans_box$y)
+cox
+```
+
+```{r}
+#urutkan daframe tersebut secara menurun pada kolom y
+cox2 <- cox[with(cox, order(-cox$Trans_box.y)),]
+cox2
+```
+Dapat dilihat bahwa lambda yang memiliki nilai log-likelihood paling tinggi adalah -0.2.
+
+
+```{r}
+lambda <- cox2[1, "Trans_box.x"]
+Trans_box_with_lambda <- (Turbidity ^ lambda -1) / lambda
+plotNormalHistogram(Trans_box_with_lambda)
+```
+
+### Ilustrasi 
+
+```{r}
+boxplot(
+  Turbidity ~ Location, 
+  data = Data, 
+  ylab="Turbidity", 
+  xlab="Location")
+```
+
+```{r}
+model_tubridity <- lm(Turbidity ~ Location, Data)
+library(car)
+Anova(model_tubridity, type="II")
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

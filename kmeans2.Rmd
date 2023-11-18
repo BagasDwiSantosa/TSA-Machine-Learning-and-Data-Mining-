@@ -1,0 +1,186 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+
+```{r}
+# Import data
+Eurojobs <- read.csv(
+  file = "D:/R/Eurojobs.csv",
+  sep = ",",
+  dec = ".",
+  header = TRUE
+)
+
+head(Eurojobs) # head() is used to display only the first 6 observations
+```
+
+```{r}
+Eurojobs <- read.csv(
+  file = "D:/R/Eurojobs.csv",
+  sep = ",",
+  dec = ".",
+  header = TRUE,
+  row.names = 1
+)
+
+Eurojobs # displays dataset
+```
+```{r}
+#argument centers corresponds to the number of desired clusters
+model <- kmeans(Eurojobs, centers = 2)
+model
+```
+```{r}
+# displays the class determined by
+# the model for all observations:
+model$cluster
+```
+```{r}
+table(model$cluster)
+```
+# klaster pada masing masing amatan dapat disimpan langsung kedalam dataset semnjadi sebuah column
+```{r}
+Eurojobs_cluster <- data.frame(Eurojobs,
+  cluster = as.factor(model$cluster)
+)
+
+head(Eurojobs_cluster)
+```
+
+```{r}
+# menyimpan hasil cluster ke csv
+write.csv(Eurojobs_cluster, file ="Eurajobs_cluster.csv")
+```
+
+KUALITAS DARI KMEANS PARTITION
+
+```{r}
+# BSS and TSS are extracted from the model and stored
+(BSS <- model$betweenss)
+```
+
+```{r}
+(TSS <- model$totss)
+```
+
+```{r}
+# We calculate the quality of the partition
+BSS / TSS * 100
+```
+
+```{r}
+model2 <- kmeans(Eurojobs, centers = 3)
+model2
+```
+
+```{r}
+model2$cluster
+```
+
+```{r}
+table(model2$cluster)
+```
+
+```{r}
+BSS2 <- model2$betweenss
+TSS2 <- model2$totss
+BSS2 / TSS2 * 100
+```
+
+```{r}
+library(parameters)
+
+res_kmeans <- cluster_analysis(Eurojobs,
+  n = 3,
+  method = "kmeans"
+)
+
+predict(res_kmeans) # get clusters
+```
+```{r}
+plot(summary(res_kmeans))
+```
+
+```{r}
+# load required packages
+library(factoextra)
+library(NbClust)
+
+# Elbow method
+fviz_nbclust(Eurojobs, kmeans, method = "wss") +
+  geom_vline(xintercept = 4, linetype = 2) + # add line for better visualisation
+  labs(subtitle = "Elbow method") # add subtitle
+```
+
+```{r}
+# Silhouette method
+fviz_nbclust(Eurojobs, kmeans, method = "silhouette") +
+  labs(subtitle = "Silhouette method")
+```
+```{r}
+# Gap statistic
+set.seed(42)
+fviz_nbclust(Eurojobs, kmeans,
+  nstart = 25,
+  method = "gap_stat",
+  nboot = 500 # reduce it for lower computation time (but less precise results)
+) +
+  labs(subtitle = "Gap statistic method")
+```
+```{r}
+library(parameters)
+
+n_clust <- n_clusters(Eurojobs,
+  package = c("easystats", "NbClust", "mclust"),
+  standardize = FALSE
+)
+n_clust
+```
+```{r}
+plot(n_clust)
+```
+```{r}
+library(cluster)
+
+set.seed(42)
+km_res <- kmeans(Eurojobs, centers = 2, nstart = 20)
+
+sil <- silhouette(km_res$cluster, dist(Eurojobs))
+fviz_silhouette(sil)
+```
+```{r}
+library(factoextra)
+
+fviz_cluster(km_res, Eurojobs, ellipse.type = "norm")
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

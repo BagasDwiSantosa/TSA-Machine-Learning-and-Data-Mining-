@@ -1,0 +1,81 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+
+```{r}
+data.mall <- read.csv("Mall_Customers.csv", sep = ";")
+str(data.mall)
+```
+
+```{r}
+head(data.mall)
+```
+
+```{r}
+#data yang digunakan hanya kolom 3 sampai 5
+data.mall.OK <- data.mall[,3:5]
+str(data.mall.OK)
+```
+
+```{r}
+head(data.mall.OK)
+
+```
+
+```{r}
+boxplot(data.mall.OK)
+```
+
+```{r}
+#standarisasi peubah
+data.mall.stdz <- scale(data.mall.OK)
+apply(data.mall.stdz,2,mean)    #rataan 0
+```
+
+```{r}
+apply(data.mall.stdz,2,sd)      #sd 1
+```
+
+```{r}
+#install.packages("factoextra")
+library(factoextra)
+```
+
+```{r}
+kmeans.mall <- eclust(data.mall.OK,stand = TRUE,FUNcluster = "kmeans",k=4,graph = T)
+kmeans.mall$cluster
+```
+
+```{r}
+table(kmeans.mall$cluster)
+```
+
+```{r}
+kmeans.mall$centers
+aggregate(data.mall.OK,by=list(cluster=kmeans.mall$cluster),FUN = mean)
+```
+
+```{r}
+#scatterplot
+fviz_cluster(kmeans.mall)
+```
+```{r}
+
+```
+```{r}
+
+```
+
+
+
+
+
+
+
+
+
+
+
+

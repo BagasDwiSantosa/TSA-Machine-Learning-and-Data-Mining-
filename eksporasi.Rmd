@@ -1,0 +1,23 @@
+---
+title: "ekspolari"
+output: html_document
+date: "2023-09-04"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+df <- read.csv("https://raw.githubusercontent.com/alfanugraha/tsa-handson/master/churn-bigml-20.csv", header = T, sep=",")
+str(df)
+```
+
+
+
+
+
+
+
+
+

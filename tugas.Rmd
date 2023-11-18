@@ -1,0 +1,48 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+# Import data
+customer <- read.csv(
+  file = "customer_segmentation.csv"
+)
+
+head(customer) # head() is used to display only the first 6 observations
+```
+
+```{r}
+model <- kmeans(customer, centers = 2)
+model
+```
+
+```{r}
+model$cluster
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+```{r}
+
+```
+```{r}
+
+```

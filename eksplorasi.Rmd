@@ -1,0 +1,195 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(skimr)
+library(DataExplorer)
+```
+
+```{r}
+df <- read.csv("https://raw.githubusercontent.com/alfanugraha/tsa-handson/master/churn-bigml-20.csv", header = T, sep=",")
+str(df)
+```
+# skimr::skim(df) untuk cek data lebih lengkap diconsole
+# 
+
+```{r}
+skimr::skim(df)
+```
+
+```{r}
+plot_intro(df)
+```
+
+```{r}
+plot_missing(df)
+```
+
+```{r}
+plot_str(df, type="r")
+```
+
+#HISTOGRAM
+
+```{r}
+histo <- hist(df$Total.day.calls, main = "Total panggilan (hari)", xlab = "Jumlah panggilan", ylab = "Frekuensi")
+```
+```{r}
+#batas selang
+histo$breaks
+histo$counts
+histo$mids
+```
+
+```{r}
+hist(df$Total.day.calls, main = "Total panggilan (hari)", xlab = "Jumlah panggilan", ylab = "Frekuensi", breaks = 30)
+```
+
+```{r}
+n <- length(df$Total.day.calls)
+k1 <- sqrt(n)
+histo2 <- hist(df$Total.day.calls, main = "Total panggilan (hari)", xlab = "Jumlah panggilan", ylab = "Frekuensi", breaks = k1)
+histo2
+```
+
+
+
+```{r}
+k3 <- 2*n^1/3
+histo4 <- hist(df$Total.day.calls, main = "Total panggilan (hari)", xlab = "Jumlah panggilan", ylab = "Frekuensi", breaks = k3)
+histo4
+```
+
+```{r}
+hist(df$Total.day.calls, main = "Distribusi Total panggilan", xlab = "Jumlah panggilan", ylab = "Frekuensi", xlim=c(0,150), ylim = c(0,0.02), freq = F)
+
+curve(
+  dnorm(x, 
+        mean = mean(df$Total.day.calls),
+        sd = sd(df$Total.day.calls)
+  ),
+  add = T, lwd = 2
+)
+```
+
+```{r}
+par(mfrow=c(1, 2))
+
+#total panggilan dibawah 100
+hist(df[df$Total.day.calls < 100, ]$Total.day.calls, 
+     main = "Total panggilan", 
+     xlab = "Jumlah panggilan dibawah 100", 
+     ylab = "Frekuensi",
+     col = "green")
+
+#total panggilan diatas 100
+hist(df[df$Total.day.calls > 100, ]$Total.day.calls, 
+     main = "Total panggilan", 
+     xlab = "Jumlah panggilan dibawah 100", 
+     ylab = "Frekuensi",
+     col = "blue")
+```
+# filter dan sort
+# sort(df[df$Total.day.calls < 100, ]$Total.day.calls)
+
+```{r}
+plot(
+  density(df$Total.day.calls),
+  main = "Perbandingan"
+)
+lines(
+  density(df$Total.eve.calls),
+  col = "green"
+)
+lines(
+  density(df$Total.night.calls),
+  col = "red"
+)
+
+legend("topright",
+       c("Day Calls", "Evening Calls", "Night Calss"),
+       col =c("black", "green", "red"), lty=1
+       )
+```
+
+
+```{r}
+box1 <- boxplot(df$Total.day.calls,
+        main = "Total panggilan",
+        horizontal = T,
+        frame = F,
+        col = "green"
+        )
+```
+
+```{r}
+#nilai minimum
+min(df$Total.day.calls)
+
+#statistik 5 serangkai
+quantile(df$Total.day.calls)
+```
+## deteksi pencilan
+
+```{r}
+Q1 <- quantile(df$Total.day.calls)[2]
+Q3 <- quantile(df$Total.day.calls)[4]
+
+batas_atas <- Q3 +(3/2 * Q3-Q1)
+cat("Batas atas =", batas_atas, "\n")
+
+batas_bawah <- Q1 - (3/2 * Q3-Q1)
+cat("Batas bawah =", batas_bawah)
+```
+
+# HISTOGRAM DAN BOXPLOT
+
+```{r}
+par(mfrow=c(1, 2))
+hist(df$Total.day.calls, main= "Total")
+```
+
+```{r}
+rataan <- mean(df$Total.day.calls)
+med <- median(df$Total.day.calls)
+
+modus <- function(x) {
+  nilai_unique <- unique(x)
+  nilai_unique[which.max(tabulate(match(x, nilai_unique)))]
+}
+mod <- modus(df$Total.day.calls)
+
+cat("rataan =", rataan, "\n")
+cat("median =", med, "\n")
+cat("modus =", mod)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
